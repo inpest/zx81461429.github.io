@@ -16,7 +16,7 @@
 <meta property="og:description" content="关于Hexo电脑迁移备份的问题">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-12-21T07:41:15.000Z">
-<meta property="article:modified_time" content="2020-04-30T05:20:35.179Z">
+<meta property="article:modified_time" content="2020-04-30T05:32:08.280Z">
 <meta property="article:author" content="M_Fire">
 <meta name="twitter:card" content="summary">
   
@@ -194,18 +194,23 @@
 </li>
 <li><p>cnpm 因为国内npm下载很慢 所以我们利用npm来下载淘宝的镜像源cnpm</p>
 <p>   下载好nodejs后输入命令</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g cnpm --registry&#x3D;https:&#x2F;&#x2F;registry.npm.taobao.org</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g cnpm --registry&#x3D;https:&#x2F;&#x2F;registry.npm.taobao.org</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
 </li>
 <li><p>下载Hexo博客框架</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cnpm install -g hexo-cli</span><br></pre></td></tr></table></figure></li>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cnpm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>然后我们就可以安装hexo命令了输入命令</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cnpm install hexo --save</span><br></pre></td></tr></table></figure></li>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cnpm install hexo --save</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>输入命令检查版本信息</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo -v</span><br></pre></td></tr></table></figure></li>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo -v</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>以上步骤正确的话我们就可以开始使用hexo写博客了</p>
 <p> 下面分别是清理和生成博客文件的命令</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo g</span><br></pre></td></tr></table></figure></li>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo g</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>这里如果 hexo g 并没有生成全部的文件，比如你的博客文件，那么说明有插件没有下载完全<br>输入命令</p>
  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cnpm install</span><br></pre></td></tr></table></figure>
 <p> 重新执行第7部命令，如果文件齐全则成功</p>
@@ -219,11 +224,11 @@
 <p> 这是因为我们需要再安装一个部署到远端的插件，所以我们继续使用cnpm来下载这个插件</p>
  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cnpm install --save hexo-deployer-git</span><br></pre></td></tr></table></figure>
 <p> 下载好了我们就可以执行刚才的命令部署到远端了</p>
-<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2></li>
-<li><p>首先每次换电脑之前确保要将本地的blog工程最新版推送至github上</p>
 </li>
-<li><p>每次更换电脑后首先要将最新版的blog目录从github上 pull 到本地仓库</p>
-</li>
+</ol>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ol>
+<li>首先每次换电脑之前确保要将本地的blog工程最新版推送至github上</li>
+<li>每次更换电脑后首先要将最新版的blog目录从github上 pull 到本地仓库</li>
 </ol>
 <h2 id="这样我们就完美解决了更换电脑的问题了"><a href="#这样我们就完美解决了更换电脑的问题了" class="headerlink" title="这样我们就完美解决了更换电脑的问题了"></a>这样我们就完美解决了更换电脑的问题了</h2>
       
