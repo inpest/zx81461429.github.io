@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ET," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言又到了学习ET的前置知识的时间，最近我得加快脚步了，这一个月内需要将ET框架前置的基本知识掌握，并可以熟练使用ET框架进行小型GamePlay的开发，并在自己能力范围内深入研究下ET的源码为以后做准备，这也是我近期树立起的小目标把，那么废话不多说今天的主题是ILRuntime 游戏热更新简述什么是游戏热更新一般的单机游戏,都是玩家下载之后直接可以玩的，因为单机游戏一般很少或者不会牵扯到更新的问">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ET框架探索之ILRuntime与游戏热更新">
+<meta property="og:url" content="http://yoursite.com/2020/05/28/ILRuntime/index.html">
+<meta property="og:site_name" content="爆肝全栈是一个梦想">
+<meta property="og:description" content="前言又到了学习ET的前置知识的时间，最近我得加快脚步了，这一个月内需要将ET框架前置的基本知识掌握，并可以熟练使用ET框架进行小型GamePlay的开发，并在自己能力范围内深入研究下ET的源码为以后做准备，这也是我近期树立起的小目标把，那么废话不多说今天的主题是ILRuntime 游戏热更新简述什么是游戏热更新一般的单机游戏,都是玩家下载之后直接可以玩的，因为单机游戏一般很少或者不会牵扯到更新的问">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/18/YhyXa6.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/18/Yhyqq1.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/18/YhyOVx.png">
+<meta property="article:published_time" content="2020-05-28T07:48:15.000Z">
+<meta property="article:modified_time" content="2020-05-18T13:30:38.361Z">
+<meta property="article:author" content="M_Fire">
+<meta property="article:tag" content="ET">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s1.ax1x.com/2020/05/18/YhyXa6.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/05/28/ILRuntime/"/>
+
+
+
+
+
+  <title>ET框架探索之ILRuntime与游戏热更新 | 爆肝全栈是一个梦想</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/zx81461429" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">爆肝全栈是一个梦想</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/28/ILRuntime/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="M_Fire">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/img/QQ%E5%A4%B4%E5%83%8F.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="爆肝全栈是一个梦想">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ET框架探索之ILRuntime与游戏热更新</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-28T15:48:15+08:00">
+                2020-05-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Unity/" itemprop="url" rel="index">
+                    <span itemprop="name">Unity</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Unity/ET%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">ET框架学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/05/28/ILRuntime/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/05/28/ILRuntime/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量 <i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>又到了学习ET的前置知识的时间，最近我得加快脚步了，这一个月内需要将ET框架前置的基本知识掌握，并可以熟练使用ET框架进行小型GamePlay的开发，并在自己能力范围内深入研究下ET的源码为以后做准备，这也是我近期树立起的小目标把，那么废话不多说今天的主题是ILRuntime</p>
+<h1 id="游戏热更新简述"><a href="#游戏热更新简述" class="headerlink" title="游戏热更新简述"></a>游戏热更新简述</h1><h2 id="什么是游戏热更新"><a href="#什么是游戏热更新" class="headerlink" title="什么是游戏热更新"></a>什么是游戏热更新</h2><p>一般的单机游戏,都是玩家下载之后直接可以玩的，因为单机游戏一般很少或者不会牵扯到更新的问题，所以单机游戏没有热更新这个概念，当开发者更新的时候直接会先删除原来的游戏包体，然后将更新后的整个包体在下载下来或者直接覆盖原来的内容进行安装，对于单机来说一般不会频繁更新，所以用户也就很少在意这些。而网络游戏这种方式就不太合适了，比如逆水寒这种即便是咸鱼版(最简客户端)也需要23G之多的空间，而网络游戏更新的频率极高基本每个星期都要更新几次，也不免有的时候出现严重漏洞进行连着修复的时候，这时候要解决这种问题就要用到<font color="red"><strong>热更新技术</strong></font>。</p>
+<h2 id="热更新案例-个人分析可略过"><a href="#热更新案例-个人分析可略过" class="headerlink" title="热更新案例(个人分析可略过)"></a>热更新案例(个人分析可略过)</h2><p>我们玩过游戏的都有过这样的经历，一个游戏安装好之后，啥都不用管，每次点开游戏之后读个条，游戏内容就始终是最新的，可能有新的道具、新的活动，可能某个东西过些日子就找不到了。这在手机游戏中是很常见的，比如说最近很火的&lt;公主连结&gt;我也是一开服就进去开始刷副本很有意思，不过这个游戏最重要的一个内容就是剧情，那么我们知道公主连结的剧情非常庞大有CG、语音、对话内容、甚至还有小番剧真的是一个看番游戏哈哈，对于这种游戏如果玩过的可能很清楚在刚开服的时候就要经过一些列的下载流程，有些人甚至被直接劝退了，因为刚下完游戏就要在下<strong>2G多的剧情</strong>这是一个很厌烦的事情，我认为游戏厂商在这里处理的对于我们玩家来说不是很友好，但是可能他们也有自己的运营方案，抛开这些不提，我们应该庆幸游戏厂商这样做，因为如果他们把大量的剧情在刚开始分的就很碎，每一个剧情都是先去资源服务器下载资源，然后才能进行剧情看番的操作，这样对于玩家来说早期是很劝退的一件事，不管你游戏有多好玩，而刚一开始先加载大部分的游戏剧情，可以让玩家们在前期有良好的体验感，那些喜欢看剧情的在早期可以没有困扰的欣赏下下来那2G的剧情，不需要一段剧情加载一段时间，那样看番很让人讨厌，就好比你刚看到最精彩的时候，想立刻看下一篇但是却要先加载，那么对于玩家来说火气就上来了，我也时常有这种感觉，尤其是那些一周一更新的动漫，对于那些喜欢刷本的、PK的玩家他们更希望能快速通过剧情获取奖励，然后继续通关更高难度的关卡，这时先更新比较大部分的剧情更适合他们，总结来说不管是剧情党、副本党、PK党前期有良好的体验更能留住这些用户，流量就是游戏最主要的赚钱方式，到了中后期，有些人慢慢就会被游戏玩法吸引，更多倾向于游戏性，这时加载就变成了分部分加载更适合玩家，玩家可以自主选择只加载剧情不加载语音、全部都加载，这让所有的玩家有了选择的权力。</p>
+<h2 id="为什么C-没法直接热更新"><a href="#为什么C-没法直接热更新" class="headerlink" title="为什么C#没法直接热更新"></a>为什么C#没法直接热更新</h2><p>其实对于安卓平台来说C#是可以进行热更新的，我们只需要在资源中新增一个目录来存放热更项目生成的DLL就可以在主工程中通过反射调用热更项目中DLL中的函数来执行相应的逻辑了，但是可惜的是在2017年的时候，IOS禁止在应用/游戏里面使用Lua或JavaScript脚本进行热更新（国内主要是使用rollout、jspatch的热更新技术框架）这就导致国内大部分热更新的应用和游戏被苹果商店下架，而C#DLL想要运行必须通过JIT(及时编译)方式，而被禁止后就没法直接热更新了</p>
+<h2 id="lua热更新"><a href="#lua热更新" class="headerlink" title="lua热更新"></a>lua热更新</h2><p>对于lua来说，原生lua是一个小巧的嵌入型语言，他可以很方便和C#集成达到动态运行的效果，而另一个luajit简单来说是一个高效的lua，因为ios的缘故他的jit方式运行受到了限制，但是luajit分为jit模式和interpreter模式。<br>关于这两种模式:</p>
+<ul>
+<li>jit模式：这是luajit高效所在，简单地说就是直接将代码编译成机器码级别执行，效率大大提升（事实上这个机制没有说的那么简单，下面会提到）。然而不幸的是这个模式在ios下是无法开启的，因为ios为了安全，从系统设计上禁止了用户进程自行申请有执行权限的内存空间，因此你没有办法在运行时编译出一段代码到内存然后执行，所以jit模式在ios以及其他有权限管制的平台（例如ps4，xbox）都不能使用。</li>
+<li>interpreter模式：那么没有jit的时候怎么办呢？还有一个interpreter模式。事实上这个模式跟原生lua的原理是一样的，就是并不直接编译成机器码，而是编译成中间态的字节码（bytecode），然后每执行下一条字节码指令，都相当于swtich到一个对应的function中执行，相比之下当然比jit慢。但好处是这个模式不需要运行时生成可执行机器码（字节码是不需要申请可执行内存空间的），所以任何平台任何时候都能用，跟原生lua一样。这个模式可以运行在任何luajit已经支持的平台，而且你可以手动关闭jit，强制运行在interpreter模式下。</li>
+<li>我们经常说的将lua编译成bytecode可以防止破解，这个bytecode是interpreter模式的bytecode，并不是jit编译出的机器码（事实上还有一个在bytecode向机器码转换过程中的中间码SSA IR，有兴趣可以看luajit官方wiki），比较坑的是可供32位版本和64位版本执行的bytecode还不一样，这样才有了著名的2.0.x版本在ios加密不能的坑。</li>
+</ul>
+<p>所以对于这种情况就诞生了xlua、tolua、ulua这种游戏热更新框架<br>拿xLua举例，xLua有两个版本，分别集成了lua5.3和luajit，一个项目只能选择其一。这两个版本C#代码是一样的，不同的是Plugins部分。</p>
+<p>lua5.3的特性更丰富些，比如支持原生64位整数，支持苹果bitcode，支持utf8等。出现问题因为是纯c代码，也好定位。比起luajit，lua对安装包的影响也更小。</p>
+<p>而luajit胜在性能，如果其jit不出问题的话，可以比lua高一个数量级。目前luajit作者不打算维护luajit，在找人接替其维护，后续发展不太明朗。</p>
+<p>项目可以根据自己情况判断哪个更适合。因为目前lua53版本使用较多，所以xLua工程Plugins目录下默认配套是lua53版本。</p>
+<h1 id="ILRuntime诞生"><a href="#ILRuntime诞生" class="headerlink" title="ILRuntime诞生"></a>ILRuntime诞生</h1><p>ILRuntime项目为基于C#的平台（例如Unity）提供了一个纯C#实现，<strong>快速</strong>、<strong>方便</strong>且<strong>可靠</strong>的IL运行时，使得能够在不支持JIT的硬件环境（如iOS）能够实现代码的热更新</p>
+<h1 id="ILRuntime原理"><a href="#ILRuntime原理" class="headerlink" title="ILRuntime原理"></a>ILRuntime原理</h1><p>这些是我自己总结的可能会有些出入，ilr通过<strong>Mono.Cecil</strong>(一个可加载并浏览现有程序集并进行动态修改并保存的.NET框架)来读取DLL中的PE信息，读取出类型、函数等最终获得方法的IL代码(因为可以在开发机上编译成DLL然后DLL中保存IL代码)，然后通过ilr自己实现的托管栈和托管对象栈进行代码的执行，基本类型的运算等功能，最终实现不依靠JIT也可以解释运行。ilr实现考虑到用C#的Stack会造成拆箱、装箱等不必要的GC Alloc而且会非常耗时效率低下，所以用unsafe的代码以及非托管内存自己实现了IL托管栈，通过struct、enum、和List实现了可以表达C#所有基础类型的功能。</p>
+<h1 id="托管调用栈"><a href="#托管调用栈" class="headerlink" title="托管调用栈"></a>托管调用栈</h1><p>ILRuntime在进行方法调用时，需要将方法的参数先压入托管栈，然后执行完毕后需要将栈还原，并把方法返回值压入栈。</p>
+<p>具体过程如下图所示</p>
+<p>调用前:　　　　　　　　　　　　　　　　　调用完成后:</p>
+<p>|—————-|　　　　　　　　　　　|——————|</p>
+<p>|　　参数1　  &nbsp; |　　　　|————–&gt;  &nbsp;| &nbsp;&nbsp;&nbsp;&nbsp; [返回值]　　|</p>
+<p>|—————-|　　　　|　　　　　　&nbsp;&nbsp; |——————|</p>
+<p>|　　　…　 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|　　 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|　　　　　　&nbsp;&nbsp;&nbsp;| &nbsp;&nbsp;&nbsp;&nbsp; NULL　　　 |</p>
+<p>|—————-|　　　　|　　　　　　&nbsp;&nbsp; |——————|</p>
+<p>|　　参数N　&nbsp;&nbsp;&nbsp;|　　　　|　　　　　　&nbsp;&nbsp;|&nbsp;　　　…　　　&nbsp;|</p>
+<p>|—————-|　　　　&nbsp;|</p>
+<p>|　局部变量1　|　　　　&nbsp;|</p>
+<p>|—————-|　　　　&nbsp; |</p>
+<p>|　　　…　　&nbsp; &nbsp;|　　　　&nbsp;|</p>
+<p>|—————-|　　　&nbsp;&nbsp; &nbsp; |</p>
+<p>|　局部变量1　|　　　　&nbsp; |</p>
+<p>|—————-|　　　　&nbsp; |</p>
+<p>|　方法栈基址&nbsp; |　　　　&nbsp; |</p>
+<p>|—————-|　　　　&nbsp; |</p>
+<p>|　 &nbsp;[返回值] &nbsp; &nbsp; |　　——</p>
+<p>|—————-|</p>
+<p>函数调用进入目标方法体后，栈指针（后面我们简称为ESP）会被指向方法栈基址那个位置，可以通过ESP-X获取到该方法的参数和方法内部申明的局部变量，在方法执行完毕后，如果有返回值，则把返回值写在方法栈基址位置即可（上图因为空间原因写在了基址后面）。</p>
+<p>当方法体执行完毕后，ILRuntime会自动平衡托管栈，释放所有方法体占用的栈内存，然后把返回值复制到参数1的位置，这样后续代码直接取栈顶部就可以取到上次方法调用的返回值了。</p>
+<h2 id="ILRuntime的优势"><a href="#ILRuntime的优势" class="headerlink" title="ILRuntime的优势"></a>ILRuntime的优势</h2><p>同市面上的其他热更方案相比，ILRuntime主要有以下优点：</p>
+<ul>
+<li><p>无缝访问C#工程的现成代码，无需额外抽象脚本API</p>
+</li>
+<li><p>直接使用VS2015进行开发，ILRuntime的解译引擎支持.Net 4.6编译的DLL</p>
+</li>
+<li><p>执行效率是L#的10-20倍</p>
+</li>
+<li><p>选择性的CLR绑定使跨域调用更快速，绑定后跨域调用的性能能达到slua的2倍左右（从脚本调用GameObject之类的接口）</p>
+</li>
+<li><p>支持跨域继承</p>
+</li>
+<li><p>完整的泛型支持</p>
+</li>
+<li><p>拥有Visual Studio的调试插件，可以实现真机源码级调试。支持Visual Studio 2015 Update3 以及Visual Studio 2017和Visual Studio 2019</p>
+<h2 id="ILRuntime如何工作"><a href="#ILRuntime如何工作" class="headerlink" title="ILRuntime如何工作"></a>ILRuntime如何工作</h2><p>针对于ILRuntime的一些用法在官网有详细的介绍，而且官网的例子通俗易懂，甚至注释非常丰富基本每行都有注释，一共有10个Demo。这里我们只看他的工作流程。<br>以Demo中第一个例子Helloworld为例</p>
+</li>
+</ul>
+<ol>
+<li>首先要了解文件目录结构</li>
+</ol>
+<p><img src="https://s1.ax1x.com/2020/05/18/YhyXa6.png" alt="目录结构"></p>
+<ol start="2">
+<li>然后我们可以进到启动脚本中看看<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.IO;</span><br><span class="line"><span class="keyword">using</span> ILRuntime.Runtime.Enviorment;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">HelloWorld</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//AppDomain是ILRuntime的入口，最好是在一个单例类中保存，整个游戏全局就一个，这里为了示例方便，每个例子里面都单独做了一个</span></span><br><span class="line">    <span class="comment">//大家在正式项目中请全局只创建一个AppDomain</span></span><br><span class="line">    AppDomain appdomain;</span><br><span class="line"></span><br><span class="line">    System.IO.MemoryStream fs;</span><br><span class="line">    System.IO.MemoryStream p;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        StartCoroutine(LoadHotFixAssembly());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">IEnumerator <span class="title">LoadHotFixAssembly</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="comment">//首先实例化ILRuntime的AppDomain，AppDomain是一个应用程序域，每个AppDomain都是一个独立的沙盒</span></span><br><span class="line">        appdomain = <span class="keyword">new</span> ILRuntime.Runtime.Enviorment.AppDomain();</span><br><span class="line">        <span class="comment">//正常项目中应该是自行从其他地方下载dll，或者打包在AssetBundle中读取，平时开发以及为了演示方便直接从StreammingAssets中读取，</span></span><br><span class="line">        <span class="comment">//正式发布的时候需要大家自行从其他地方读取dll</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</span></span><br><span class="line">        <span class="comment">//这个DLL文件是直接编译HotFix_Project.sln生成的，已经在项目中设置好输出目录为StreamingAssets，在VS里直接编译即可生成到对应目录，无需手动拷贝</span></span><br><span class="line">        <span class="comment">//工程目录在Assets\Samples\ILRuntime\1.6\Demo\HotFix_Project~</span></span><br><span class="line">        <span class="comment">//以下加载写法只为演示，并没有处理在编辑器切换到Android平台的读取，需要自行修改</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> UNITY_ANDROID</span></span><br><span class="line">        WWW www = <span class="keyword">new</span> WWW(Application.streamingAssetsPath + <span class="string">"/HotFix_Project.dll"</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">        WWW www = <span class="keyword">new</span> WWW(<span class="string">"file:///"</span> + Application.streamingAssetsPath + <span class="string">"/HotFix_Project.dll"</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">        <span class="keyword">while</span> (!www.isDone)</span><br><span class="line">            <span class="keyword">yield</span> <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrEmpty(www.error))</span><br><span class="line">            UnityEngine.Debug.LogError(www.error);</span><br><span class="line">        <span class="keyword">byte</span>[] dll = www.bytes;</span><br><span class="line">        www.Dispose();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//PDB文件是调试数据库，如需要在日志中显示报错的行号，则必须提供PDB文件，不过由于会额外耗用内存，正式发布时请将PDB去掉，下面LoadAssembly的时候pdb传null即可</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> UNITY_ANDROID</span></span><br><span class="line">        www = <span class="keyword">new</span> WWW(Application.streamingAssetsPath + <span class="string">"/HotFix_Project.pdb"</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">        www = <span class="keyword">new</span> WWW(<span class="string">"file:///"</span> + Application.streamingAssetsPath + <span class="string">"/HotFix_Project.pdb"</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">        <span class="keyword">while</span> (!www.isDone)</span><br><span class="line">            <span class="keyword">yield</span> <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrEmpty(www.error))</span><br><span class="line">            UnityEngine.Debug.LogError(www.error);</span><br><span class="line">        <span class="keyword">byte</span>[] pdb = www.bytes;</span><br><span class="line">        fs = <span class="keyword">new</span> MemoryStream(dll);</span><br><span class="line">        p = <span class="keyword">new</span> MemoryStream(pdb);</span><br><span class="line">        appdomain.LoadAssembly(fs, p, <span class="keyword">new</span> ILRuntime.Mono.Cecil.Pdb.PdbReaderProvider());</span><br><span class="line"></span><br><span class="line">        InitializeILRuntime();</span><br><span class="line">        OnHotFixLoaded();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">InitializeILRuntime</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> DEBUG &amp;&amp; (UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE)</span></span><br><span class="line">        <span class="comment">//由于Unity的Profiler接口只允许在主线程使用，为了避免出异常，需要告诉ILRuntime主线程的线程ID才能正确将函数运行耗时报告给Profiler</span></span><br><span class="line">        appdomain.UnityMainThreadID = System.Threading.Thread.CurrentThread.ManagedThreadId;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">        <span class="comment">//这里做一些ILRuntime的注册，HelloWorld示例暂时没有需要注册的</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnHotFixLoaded</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="comment">//HelloWorld，第一次方法调用</span></span><br><span class="line">        appdomain.Invoke(<span class="string">"HotFix_Project.InstanceClass"</span>, <span class="string">"StaticFunTest"</span>, <span class="literal">null</span>, <span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnDestroy</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">if</span> (fs != <span class="literal">null</span>)</span><br><span class="line">            fs.Close();</span><br><span class="line">        <span class="keyword">if</span> (p != <span class="literal">null</span>)</span><br><span class="line">            p.Close();</span><br><span class="line">        fs = <span class="literal">null</span>;</span><br><span class="line">        p = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Update</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">if</span> (Input.GetKeyDown(KeyCode.A))</span><br><span class="line">        &#123;</span><br><span class="line">            StartCoroutine(LoadHotFixAssembly());</span><br><span class="line">            appdomain.Invoke(<span class="string">"HotFix_Project.InstanceClass"</span>, <span class="string">"StaticFunTest"</span>, <span class="literal">null</span>, <span class="literal">null</span>);</span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+我们可以看里面内容非常齐全，大致流程简单概括就是，在开始的时候声名<code>AppDomain appdomain</code>为全局ilr入口一般为单例全场只存在一个,然后开启协程给它生成实例对象，然后通过WWW进行资源加载，我们加载的是刚才StreamingAssets下的DLL和PDB文件(用于调试),加载完成后用<code>appdomain.LoadAssembly</code>加载DLL程序集中的内容，最后通过invoke执行<br><font color="red">“HotFix_Project.InstanceClass”</font>(前面分别为命名空间和类名)下的<br><font color="red">“StaticFunTest”</font>方法。</li>
+</ol>
+<p>这么说可能不太直观，我们可以找到Hotfix的工程(也就是DLL的源工程)他在<strong>Assets\Samples\ILRuntime\1.6\Demo\HotFix_Project~</strong> 目录下可能因为Unity没有识别要从文件夹中进入我们使用vs打开这个文件夹的.sln就能打开热更层的代码了，我们找到上面那个类的.cs文件如下:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">HotFix_Project</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">InstanceClass</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">InstanceClass</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            UnityEngine.Debug.Log(<span class="string">"!!! InstanceClass::InstanceClass()"</span>);</span><br><span class="line">            <span class="keyword">this</span>.id = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">InstanceClass</span>(<span class="params"><span class="keyword">int</span> id</span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            UnityEngine.Debug.Log(<span class="string">"!!! InstanceClass::InstanceClass() id = "</span> + id);</span><br><span class="line">            <span class="keyword">this</span>.id = id;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> ID</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">get</span> &#123; <span class="keyword">return</span> id; &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// static method 刚才主工程调用的就是这个方法</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">StaticFunTest</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            UnityEngine.Debug.Log(<span class="string">"!!! InstanceClass.StaticFunTest()"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">StaticFunTest2</span>(<span class="params"><span class="keyword">int</span> a</span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            UnityEngine.Debug.Log(<span class="string">"!!! InstanceClass.StaticFunTest2(), a="</span> + a);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> GenericMethod&lt;T&gt;(T a)</span><br><span class="line">        &#123;</span><br><span class="line">            UnityEngine.Debug.Log(<span class="string">"!!! InstanceClass.GenericMethod(), a="</span> + a);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">RefOutMethod</span>(<span class="params"><span class="keyword">int</span> addition, <span class="keyword">out</span> List&lt;<span class="keyword">int</span>&gt; lst, <span class="keyword">ref</span> <span class="keyword">int</span> val</span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            val = val + addition + id;</span><br><span class="line">            lst = <span class="keyword">new</span> List&lt;<span class="keyword">int</span>&gt;();</span><br><span class="line">            lst.Add(id);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们发现了在场景开始脚本中调用的方法，接下来我们进行热更新的测试，我们稍稍修改下主工程的脚本</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//...HelloWorld.cs这个脚本</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Update</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">if</span> (Input.GetKeyDown(KeyCode.A))</span><br><span class="line">        &#123;</span><br><span class="line">            StartCoroutine(LoadHotFixAssembly());</span><br><span class="line">            appdomain.Invoke(<span class="string">"HotFix_Project.InstanceClass"</span>, <span class="string">"StaticFunTest"</span>, <span class="literal">null</span>, <span class="literal">null</span>);</span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>为了方便测试我们在Update中增加输入检测，当玩家按下A键的时候先去加载DLL文件，接着执行刚才我们找到的那个方法。</p>
+<ul>
+<li>我们第一次先将输出内容改成”游戏上线”<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// static method</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">StaticFunTest</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    UnityEngine.Debug.Log(<span class="string">"游戏上线"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+然后在主工程中运行并看到结果</li>
+</ul>
+<p><img src="https://s1.ax1x.com/2020/05/18/Yhyqq1.png" alt="热更前"></p>
+<ul>
+<li>第二次我们不停止游戏将热更曾代码输出内容改为”游戏突发bug进行紧急修复完成 并进行热更新”然后别忘记要重新生成(编译)热更新层的代码<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// static method</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">StaticFunTest</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    UnityEngine.Debug.Log(<span class="string">"游戏突发bug进行紧急修复完成 并进行热更新"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+我们再次按下A键发现内容改变了，至此简单热更新流程完毕</li>
+</ul>
+<p><img src="https://s1.ax1x.com/2020/05/18/YhyOVx.png" alt="热更后"></p>
+<p>其他ILRuntime还提供了很多强大的功能等着我们去探索，它的代码里写了很多让我们自己去实现的东西(你就不能直接帮我们实现了吗(狗头)，还有ilr还可以跨域继承、跨域委托、反射、重定向、绑定等需要我们仔细研究文档或者实战中去体会他们的用法。</p>
+<h1 id="iOS-IL2CPP类型裁剪问题"><a href="#iOS-IL2CPP类型裁剪问题" class="headerlink" title="iOS IL2CPP类型裁剪问题"></a>iOS IL2CPP类型裁剪问题</h1><p>IL2CPP在打包时会自动对Unity工程的DLL进行裁剪，将代码中没有引用到的类型裁剪掉，以达到减小发布后ipa包的尺寸的目的。然而在实际使用过程中，很多类型有可能会被意外剪裁掉，造成运行时抛出找不到某个类型的异常。特别是通过反射等方式在编译时无法得知的函数调用，在运行时都很有可能遇到问题。</p>
+<p>Unity提供了一个方式来告诉Unity引擎，哪些类型是不能够被剪裁掉的。具体做法就是在Unity工程的Assets目录中建立一个叫link.xml的XML文件，然后按照下面的格式指定你需要保留的类型：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">linker</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">assembly</span> <span class="attr">fullname</span>=<span class="string">"UnityEngine"</span> <span class="attr">preserve</span>=<span class="string">"all"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">assembly</span> <span class="attr">fullname</span>=<span class="string">"Assembly-CSharp"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">namespace</span> <span class="attr">fullname</span>=<span class="string">"MyGame.Utils"</span> <span class="attr">preserve</span>=<span class="string">"all"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">type</span> <span class="attr">fullname</span>=<span class="string">"MyGame.SomeClass"</span> <span class="attr">preserve</span>=<span class="string">"all"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">assembly</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">linker</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1 id="泛型实例"><a href="#泛型实例" class="headerlink" title="泛型实例"></a>泛型实例</h1><p>每个泛型实例实际上都是一个独立的类型，<code>List&lt;A&gt;</code> 和 <code>List&lt;B&gt;</code>是两个完全没有关系的类型，这意味着，如果在运行时无法通过JIT来创建新类型的话，代码中没有直接使用过的泛型实例都会在运行时出现问题。</p>
+<p>在ILRuntime中解决这个问题有两种方式，一个是使用CLR绑定，把用到的泛型实例都进行CLR绑定。另外一个方式是在Unity主工程中，建立一个类，然后在里面定义用到的那些泛型实例的public变量。这两种方式都可以告诉IL2CPP保留这个类型的代码供运行中使用。</p>
+<p>因此建议大家在实际开发中，尽量使用热更DLL内部的类作为泛型参数，因为DLL内部的类型都是ILTypeInstance，只需处理一个就行了。此外如果泛型模版类就是在DLL里定义的的话，那就完全不需要进行任何处理。</p>
+<h1 id="泛型方法"><a href="#泛型方法" class="headerlink" title="泛型方法"></a>泛型方法</h1><p>跟泛型实例一样，foo.Bar<code>&lt;TypeA&gt;</code> 和foo.Bar<code>&lt;TypeB&gt;</code>是两个完全不同的方法，需要在主工程中显式调用过，IL2CPP才能够完整保留，因此需要尽量避免在热更DLL中调用Unity主工程的泛型方法。如果在iOS上实际运行遇到报错，可以尝试在Unity的主工程中随便写一个static的方法，然后对这个泛型方法调用一下即可，这个方法无需被调用，只是用来告诉IL2CPP我们需要这个方法</p>
+<h1 id="C-vs-Lua"><a href="#C-vs-Lua" class="headerlink" title="C# vs Lua"></a>C# vs Lua</h1><p>目前市面上主流的热更方案，主要分为Lua的实现和用C#的实现，两种实现方式各有各的优缺点。</p>
+<p>Lua是一个已经非常成熟的解决方案，但是对于Unity项目而言，也有非常明显的缺点。就是如果使用Lua来进行逻辑开发，就势必要求团队当中的人员需要同时对Lua和C#都特别熟悉，或者将团队中的人员分成C#小组和Lua小组。不管哪一种方案，对于中小型团队都是非常痛苦的一件事情。</p>
+<p>用C#来作为热更语言最大的优势就是项目可以用同一个语言来进行开发，对Unity项目而言，这种方式肯定是开发效率最高的。</p>
+<p>Lua的优势在于解决方案足够成熟，之前的C++团队可能比起C#，更加习惯使用Lua来进行逻辑开发。此外借助luajit，在某些情况下的执行效率会非常不错，但是luajit现在维护情况也不容乐观，官方还是推荐使用公版Lua来开发。</p>
+<h1 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h1><p>由于篇幅限制就说到这里，Lua热更新想着新开一篇博客继续讲，我们下次再见</p>
+<h1 id="参考连接"><a href="#参考连接" class="headerlink" title="参考连接"></a>参考连接</h1><p>ILRuntime官网:<a href="http://ourpalm.github.io/ILRuntime/public/v1/guide/index.html" target="_blank" rel="noopener">http://ourpalm.github.io/ILRuntime/public/v1/guide/index.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/img/QQ群.png" alt="M_Fire wechat" style="width: 200px; max-width: 100%;"/>
+    <div>上面是我的一个Unity小白聚集地QQ群，有兴趣的可以入坑哦!</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>打赏什么的，从来没想过!</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/img/wechatpay.jpg" alt="M_Fire 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/img/alipay.jpg" alt="M_Fire 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ET/" rel="tag"># ET</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/03/%E9%AD%94%E7%8E%8B%E8%AF%AD%E8%A8%80%E8%A7%A3%E9%87%8A/" rel="next" title="魔王语言解释">
+                <i class="fa fa-chevron-left"></i> 魔王语言解释
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+<span class="jiathis_txt">分享到：</span>
+<a class="jiathis_button_fav">收藏夹</a>
+<a class="jiathis_button_copy">复制网址</a>
+<a class="jiathis_button_email">邮件</a>
+<a class="jiathis_button_weixin">微信</a>
+<a class="jiathis_button_qzone">QQ空间</a>
+<a class="jiathis_button_tqq">腾讯微博</a>
+<a class="jiathis_button_douban">豆瓣</a>
+<a class="jiathis_button_share">一键分享</a>
+
+<a href="http://www.jiathis.com/share?uid=2140465" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+var jiathis_config={
+  data_track_clickback:true,
+  summary:"",
+  shortUrl:false,
+  hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/img/QQ%E5%A4%B4%E5%83%8F.jpg"
+                alt="M_Fire" />
+            
+              <p class="site-author-name" itemprop="name">M_Fire</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx81461429" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://space.bilibili.com/111311838/channel/index" title="哔哩哔哩" target="_blank">哔哩哔哩</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#游戏热更新简述"><span class="nav-number">2.</span> <span class="nav-text">游戏热更新简述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是游戏热更新"><span class="nav-number">2.1.</span> <span class="nav-text">什么是游戏热更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#热更新案例-个人分析可略过"><span class="nav-number">2.2.</span> <span class="nav-text">热更新案例(个人分析可略过)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么C-没法直接热更新"><span class="nav-number">2.3.</span> <span class="nav-text">为什么C#没法直接热更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lua热更新"><span class="nav-number">2.4.</span> <span class="nav-text">lua热更新</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ILRuntime诞生"><span class="nav-number">3.</span> <span class="nav-text">ILRuntime诞生</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ILRuntime原理"><span class="nav-number">4.</span> <span class="nav-text">ILRuntime原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#托管调用栈"><span class="nav-number">5.</span> <span class="nav-text">托管调用栈</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ILRuntime的优势"><span class="nav-number">5.1.</span> <span class="nav-text">ILRuntime的优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ILRuntime如何工作"><span class="nav-number">5.2.</span> <span class="nav-text">ILRuntime如何工作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#iOS-IL2CPP类型裁剪问题"><span class="nav-number">6.</span> <span class="nav-text">iOS IL2CPP类型裁剪问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#泛型实例"><span class="nav-number">7.</span> <span class="nav-text">泛型实例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#泛型方法"><span class="nav-number">8.</span> <span class="nav-text">泛型方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#C-vs-Lua"><span class="nav-number">9.</span> <span class="nav-text">C# vs Lua</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结束语"><span class="nav-number">10.</span> <span class="nav-text">结束语</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考连接"><span class="nav-number">11.</span> <span class="nav-text">参考连接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M_Fire</span>
+
+  
+</div>
+
+<!-- 
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+-->
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      本站访问数 <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      本站总访问量 <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      人次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  
+
+
+
+  
+  
+
+
+
+  
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'R5YLU3i1BrXUtpcxhPzMwIDu-gzGzoHsz',
+        appKey: 'ffVYMuEw7n2of3d4fNY8QsHJ',
+        placeholder: '请输入你的评论',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
