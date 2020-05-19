@@ -86,17 +86,17 @@
 
 
 
-<meta name="description" content="前言又到了学习ET的前置知识的时间，最近我得加快脚步了，这一个月内需要将ET框架前置的基本知识掌握，并可以熟练使用ET框架进行小型GamePlay的开发，并在自己能力范围内深入研究下ET的源码为以后做准备，这也是我近期树立起的小目标把，那么废话不多说今天的主题是ILRuntime 游戏热更新简述什么是游戏热更新一般的单机游戏,都是玩家下载之后直接可以玩的，因为单机游戏一般很少或者不会牵扯到更新的问">
+<meta name="description" content="前言又到了学习ET的前置知识的时间，最近我得加快脚步了，这一个月内需要将ET框架前置的基本知识掌握，并可以熟练使用ET框架进行小型GamePlay的开发，并在自己能力范围内深入研究下ET的源码为以后做准备，这也是我近期树立起的小目标把，那么废话不多说今天的主题是ILRuntime">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ET框架探索之ILRuntime与游戏热更新">
-<meta property="og:url" content="http://yoursite.com/2020/05/28/ILRuntime/index.html">
+<meta property="og:url" content="http://yoursite.com/2020/05/15/ILRuntime/index.html">
 <meta property="og:site_name" content="爆肝全栈是一个梦想">
-<meta property="og:description" content="前言又到了学习ET的前置知识的时间，最近我得加快脚步了，这一个月内需要将ET框架前置的基本知识掌握，并可以熟练使用ET框架进行小型GamePlay的开发，并在自己能力范围内深入研究下ET的源码为以后做准备，这也是我近期树立起的小目标把，那么废话不多说今天的主题是ILRuntime 游戏热更新简述什么是游戏热更新一般的单机游戏,都是玩家下载之后直接可以玩的，因为单机游戏一般很少或者不会牵扯到更新的问">
+<meta property="og:description" content="前言又到了学习ET的前置知识的时间，最近我得加快脚步了，这一个月内需要将ET框架前置的基本知识掌握，并可以熟练使用ET框架进行小型GamePlay的开发，并在自己能力范围内深入研究下ET的源码为以后做准备，这也是我近期树立起的小目标把，那么废话不多说今天的主题是ILRuntime">
 <meta property="og:image" content="https://s1.ax1x.com/2020/05/18/YhyXa6.png">
 <meta property="og:image" content="https://s1.ax1x.com/2020/05/18/Yhyqq1.png">
 <meta property="og:image" content="https://s1.ax1x.com/2020/05/18/YhyOVx.png">
-<meta property="article:published_time" content="2020-05-28T07:48:15.000Z">
-<meta property="article:modified_time" content="2020-05-18T13:30:38.361Z">
+<meta property="article:published_time" content="2020-05-15T07:48:15.000Z">
+<meta property="article:modified_time" content="2020-05-19T14:31:18.866Z">
 <meta property="article:author" content="M_Fire">
 <meta property="article:tag" content="ET">
 <meta name="twitter:card" content="summary">
@@ -130,7 +130,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/05/28/ILRuntime/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/05/15/ILRuntime/"/>
 
 
 
@@ -264,7 +264,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/28/ILRuntime/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/15/ILRuntime/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="M_Fire">
@@ -293,8 +293,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-28T15:48:15+08:00">
-                2020-05-28
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-15T15:48:15+08:00">
+                2020-05-15
               </time>
             
 
@@ -345,8 +345,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2020/05/28/ILRuntime/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2020/05/28/ILRuntime/" itemprop="commentCount"></span>
+                <a href="/2020/05/15/ILRuntime/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/05/15/ILRuntime/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -411,6 +411,7 @@
 
       
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>又到了学习ET的前置知识的时间，最近我得加快脚步了，这一个月内需要将ET框架前置的基本知识掌握，并可以熟练使用ET框架进行小型GamePlay的开发，并在自己能力范围内深入研究下ET的源码为以后做准备，这也是我近期树立起的小目标把，那么废话不多说今天的主题是ILRuntime</p>
+<a id="more"></a>
 <h1 id="游戏热更新简述"><a href="#游戏热更新简述" class="headerlink" title="游戏热更新简述"></a>游戏热更新简述</h1><h2 id="什么是游戏热更新"><a href="#什么是游戏热更新" class="headerlink" title="什么是游戏热更新"></a>什么是游戏热更新</h2><p>一般的单机游戏,都是玩家下载之后直接可以玩的，因为单机游戏一般很少或者不会牵扯到更新的问题，所以单机游戏没有热更新这个概念，当开发者更新的时候直接会先删除原来的游戏包体，然后将更新后的整个包体在下载下来或者直接覆盖原来的内容进行安装，对于单机来说一般不会频繁更新，所以用户也就很少在意这些。而网络游戏这种方式就不太合适了，比如逆水寒这种即便是咸鱼版(最简客户端)也需要23G之多的空间，而网络游戏更新的频率极高基本每个星期都要更新几次，也不免有的时候出现严重漏洞进行连着修复的时候，这时候要解决这种问题就要用到<font color="red"><strong>热更新技术</strong></font>。</p>
 <h2 id="热更新案例-个人分析可略过"><a href="#热更新案例-个人分析可略过" class="headerlink" title="热更新案例(个人分析可略过)"></a>热更新案例(个人分析可略过)</h2><p>我们玩过游戏的都有过这样的经历，一个游戏安装好之后，啥都不用管，每次点开游戏之后读个条，游戏内容就始终是最新的，可能有新的道具、新的活动，可能某个东西过些日子就找不到了。这在手机游戏中是很常见的，比如说最近很火的&lt;公主连结&gt;我也是一开服就进去开始刷副本很有意思，不过这个游戏最重要的一个内容就是剧情，那么我们知道公主连结的剧情非常庞大有CG、语音、对话内容、甚至还有小番剧真的是一个看番游戏哈哈，对于这种游戏如果玩过的可能很清楚在刚开服的时候就要经过一些列的下载流程，有些人甚至被直接劝退了，因为刚下完游戏就要在下<strong>2G多的剧情</strong>这是一个很厌烦的事情，我认为游戏厂商在这里处理的对于我们玩家来说不是很友好，但是可能他们也有自己的运营方案，抛开这些不提，我们应该庆幸游戏厂商这样做，因为如果他们把大量的剧情在刚开始分的就很碎，每一个剧情都是先去资源服务器下载资源，然后才能进行剧情看番的操作，这样对于玩家来说早期是很劝退的一件事，不管你游戏有多好玩，而刚一开始先加载大部分的游戏剧情，可以让玩家们在前期有良好的体验感，那些喜欢看剧情的在早期可以没有困扰的欣赏下下来那2G的剧情，不需要一段剧情加载一段时间，那样看番很让人讨厌，就好比你刚看到最精彩的时候，想立刻看下一篇但是却要先加载，那么对于玩家来说火气就上来了，我也时常有这种感觉，尤其是那些一周一更新的动漫，对于那些喜欢刷本的、PK的玩家他们更希望能快速通过剧情获取奖励，然后继续通关更高难度的关卡，这时先更新比较大部分的剧情更适合他们，总结来说不管是剧情党、副本党、PK党前期有良好的体验更能留住这些用户，流量就是游戏最主要的赚钱方式，到了中后期，有些人慢慢就会被游戏玩法吸引，更多倾向于游戏性，这时加载就变成了分部分加载更适合玩家，玩家可以自主选择只加载剧情不加载语音、全部都加载，这让所有的玩家有了选择的权力。</p>
 <h2 id="为什么C-没法直接热更新"><a href="#为什么C-没法直接热更新" class="headerlink" title="为什么C#没法直接热更新"></a>为什么C#没法直接热更新</h2><p>其实对于安卓平台来说C#是可以进行热更新的，我们只需要在资源中新增一个目录来存放热更项目生成的DLL就可以在主工程中通过反射调用热更项目中DLL中的函数来执行相应的逻辑了，但是可惜的是在2017年的时候，IOS禁止在应用/游戏里面使用Lua或JavaScript脚本进行热更新（国内主要是使用rollout、jspatch的热更新技术框架）这就导致国内大部分热更新的应用和游戏被苹果商店下架，而C#DLL想要运行必须通过JIT(及时编译)方式，而被禁止后就没法直接热更新了</p>
@@ -582,6 +583,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2020/05/19/Google.Protobuf/" rel="prev" title="Google-Protobuf序列化反序列化原理探究">
+                Google-Protobuf序列化反序列化原理探究 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -690,7 +695,7 @@ var jiathis_config={
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -712,7 +717,7 @@ var jiathis_config={
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
